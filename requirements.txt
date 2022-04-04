@@ -1,0 +1,6 @@
+streamlit
+pandas
+numpy
+openpyxl
+click == 7.1.2
+xlsxwriter
