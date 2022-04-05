@@ -110,6 +110,11 @@ def app():
 
 
                 master = master.drop(rows_old).reset_index(drop=True)
+                master['sch_line_blocked_for_delv'] = master['sch_line_blocked_for_delv'].astype(str)
+                master['sch_line_blocked_for_delv'] = master['sch_line_blocked_for_delv'].replace("nan", "")
+
+                master['del_blk'] = master['del_blk'].astype(str)
+                master['del_blk'] = master['del_blk'].replace("nan", "")
                 # LOGIC STEP
                 # Drop any rows where we have no quantity left.
                 master = master.loc[master['remaining_qty'] != 0]
