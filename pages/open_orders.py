@@ -110,7 +110,11 @@ def app():
 
 
                 master = master.drop(rows_old).reset_index(drop=True)
+                master['sch_line_blocked_for_delv'] = master['sch_line_blocked_for_delv'].astype(str)
+                master['sch_line_blocked_for_delv'] = master['sch_line_blocked_for_delv'].replace("nan", "")
 
+                master['del_blk'] = master['del_blk'].astype(str)
+                master['del_blk'] = master['del_blk'].replace("nan", "")
                 # LOGIC STEP
                 # Drop any rows where we have no quantity left.
                 master = master.loc[master['remaining_qty'] != 0]
@@ -179,12 +183,13 @@ def app():
                 # Logic is as followed
                 # Manual SAP/Prority 13/ Valid in LTSI =Ship
                 # block in either block column is not shippable
-                conditions = [merged['order_method'] == "Manual SAP",
+                conditions = [merged["del_blk"] != "",
+                              merged["sch_line_blocked_for_delv"] != "",
+                              merged['order_method'] == "Manual SAP",
                               merged['delivery_priority'] == 13,
                               merged["Valid in LTSI Tool"] == "TRUE",
-                              ~merged["del_blk"].isnull(),
-                              ~merged["sch_line_blocked_for_delv"].isnull()]
-                outputs = ["Shippable", "Shippable", "Shippable", "Blocked","Blocked"]
+                              ]
+                outputs = ["Blocked", "Blocked", "Shippable", "Shippable", "Shippable"]
                 # CONCAT ID AND LINE ORDER AND ADD
                 #  IN   DEX IS 8
                 res = np.select(conditions, outputs, "Under Review by C-SAM")
