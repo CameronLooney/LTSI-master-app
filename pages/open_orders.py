@@ -49,7 +49,7 @@ def app():
                 return vlookup, previous, TF, master
 
             vlookup, previous, TF, master = read_excel_files(aux, master)
-            print(vlookup["Date"].dtypes)
+
 
             # this is required as some Dates are left blank and thus were lost
             # in later data manipulation
@@ -212,6 +212,11 @@ def app():
                 return merged
 
             # master = generate_status_column(master)
+            def new_sdm_feedback(merged):
+                merged["Action (SDM)"] = ""
+                merged["Comments(SDM)"] = ""
+                merged["Estimated DN Date"] = ""
+                return merged
 
             def generate_sdm_feedback(merged):
                 feedback = previous.drop('Status (SS)', 1)
@@ -226,6 +231,12 @@ def app():
 
             # master = generate_sdm_feedback(master)
 
+            def scheduled_out(merged):
+                ten_days = datetime.now() + timedelta(10)
+                merged.loc[(merged['cust_req_date'] < ten_days) & (merged['Status (SS)'] == 'Shippable') & (
+                            merged["Valid in LTSI Tool"] == 'TRUE'), 'Status (SS)'] = 'Scheduled Out'
+                return merged
+
             def open_orders_generator(master):
                 step1 = master_vlookup_merge(master, vlookup)
                 step2 = drop_old_dates(step1)
@@ -239,7 +250,9 @@ def app():
                 step10 = generate_unique_key(step9)
                 step11 = generate_validity_column(step10)
                 step12 = generate_status_column(step11)
-                finished = generate_sdm_feedback(step12)
+                # step13 = scheduled_out(step12)
+                step13 = new_sdm_feedback(step12)
+                finished = generate_sdm_feedback(step13)
                 cols = columns_to_keep()
                 cols.remove('sales_ord')
                 cols.append('salesOrderNum')
@@ -262,15 +275,23 @@ def app():
                     worksheet.set_column('K:K', None, fmt)
                     worksheet.set_column('L:L', None, fmt)
                     # Light yellow fill with dark yellow text.
-                    print(merged.shape)
                     number_rows = len(merged.index) + 1
-                    orange_format = workbook.add_format({'bg_color': '#FFEB9C',
-                                                         'font_color': '#9C6500'})
-                    worksheet.conditional_format('$AH$2:$AK$%d' % (number_rows),
+                    yellow_format = workbook.add_format({'bg_color': '#FFEB9C'})
+                    worksheet.conditional_format('A2:AH%d' % (number_rows),
                                                  {'type': 'formula',
-                                                  'criteria': '=AH2="Under Review with  C-SAM"',
-                                                  'format': orange_format})
+                                                  'criteria': '=$AH2="Under Review with  C-SAM"',
+                                                  'format': yellow_format})
+                    red_format = workbook.add_format({'bg_color': '#ffc7ce'})
+                    worksheet.conditional_format('A2:AH%d' % (number_rows),
+                                                 {'type': 'formula',
+                                                  'criteria': '=$AH2="Blocked"',
+                                                  'format': red_format})
 
+                    green_format = workbook.add_format({'bg_color': '#c6efce'})
+                    worksheet.conditional_format('A2:AH%d' % (number_rows),
+                                                 {'type': 'formula',
+                                                  'criteria': '=$AH2="Shippable"',
+                                                  'format': green_format})
                     for column in merged:
                         column_width = max(merged[column].astype(str).map(len).max(), len(column))
                         col_idx = merged.columns.get_loc(column)
@@ -278,15 +299,26 @@ def app():
                         worksheet.autofilter(0, 0, merged.shape[0], merged.shape[1])
                     worksheet.set_column(11, 12, 20)
                     worksheet.set_column(12, 13, 20)
+                    worksheet.set_column(13, 14, 20)
+                    header_format = workbook.add_format({'bold': True,
+                                                         'bottom': 2,
+                                                         'bg_color': '#0AB2F7'})
 
+                    # Write the column headers with the defined format.
+                    for col_num, value in enumerate(merged.columns.values):
+                        worksheet.write(0, col_num, value, header_format)
+                    my_format = workbook.add_format()
+                    my_format.set_align('left')
+
+                    worksheet.set_column('N:N', None, my_format)
                     writer.save()
                     today = datetime.today()
                     d1 = today.strftime("%d/%m/%Y")
                     st.write("Download Completed File:")
                     st.download_button(
-                        label="Download Excel worksheets",
+                            label="Download Excel worksheets",
                             data=buffer,
-                            file_name="LTSI_Open_Orders" + d1 + ".xlsx",
+                            file_name="LTSI_file_BACKTEST" + d1 + ".xlsx",
                             mime="application/vnd.ms-excel"
                         )
 
