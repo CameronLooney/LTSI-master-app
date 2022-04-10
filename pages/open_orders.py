@@ -204,7 +204,7 @@ def app():
                               merged["Valid in LTSI Tool"] == "TRUE",
                               ]
                 outputs = ["Blocked", "Blocked", "Shippable", "Shippable", "Shippable"]
-                result = np.select(conditions, outputs, "Under Review with  C-SAM")
+                result = np.select(conditions, outputs, "Under Review with C-SAM")
                 result = pd.Series(result)
                 merged['Status (SS)'] = result
                 return merged
@@ -277,7 +277,11 @@ def app():
                     yellow_format = workbook.add_format({'bg_color': '#FFEB9C'})
                     worksheet.conditional_format('A2:AH%d' % (number_rows),
                                                  {'type': 'formula',
-                                                  'criteria': '=$AH2="Under Review with  C-SAM"',
+                                                  'criteria': '=$AH2="Under Review with C-SAM"',
+                                                  'format': yellow_format})
+                    worksheet.conditional_format('A2:AH%d' % (number_rows),
+                                                 {'type': 'formula',
+                                                  'criteria': '=$AH2="Under Review with CSAM"',
                                                   'format': yellow_format})
                     red_format = workbook.add_format({'bg_color': '#ffc7ce'})
                     worksheet.conditional_format('A2:AH%d' % (number_rows),
