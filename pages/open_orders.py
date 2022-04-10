@@ -294,6 +294,8 @@ def app():
                                                  {'type': 'formula',
                                                   'criteria': '=$AH2="Shippable"',
                                                   'format': green_format})
+
+
                     for column in merged:
                         column_width = max(merged[column].astype(str).map(len).max(), len(column))
                         col_idx = merged.columns.get_loc(column)

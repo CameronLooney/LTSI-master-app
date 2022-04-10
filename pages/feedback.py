@@ -67,6 +67,26 @@ def app():
                                              {'type': 'formula',
                                               'criteria': '=$AG2="Shippable"',
                                               'format': green_format})
+                # COL MIGHT BE AH
+                worksheet.conditional_format('A2:AH%d' % (number_rows),
+                                             {'type': 'formula',
+                                              'criteria': '=$AH2="Under Review with CSAM"',
+                                              'format': yellow_format})
+                worksheet.conditional_format('A2:AH%d' % (number_rows),
+                                             {'type': 'formula',
+                                              'criteria': '=$AH2="Under Review with C-SAM"',
+                                              'format': yellow_format})
+                red_format = workbook.add_format({'bg_color': '#ffc7ce'})
+                worksheet.conditional_format('A2:AH%d' % (number_rows),
+                                             {'type': 'formula',
+                                              'criteria': '=$AH2="Blocked"',
+                                              'format': red_format})
+
+                green_format = workbook.add_format({'bg_color': '#c6efce'})
+                worksheet.conditional_format('A2:AH%d' % (number_rows),
+                                             {'type': 'formula',
+                                              'criteria': '=$AH2="Shippable"',
+                                              'format': green_format})
                 for column in merged:
                     column_width = max(merged[column].astype(str).map(len).max(), len(column))
                     col_idx = merged.columns.get_loc(column)
