@@ -217,21 +217,15 @@ def app():
                 return merged
 
             def generate_sdm_feedback(merged):
-                try:
-                    feedback = previous.drop('Status (SS)', 1)
-                    merged['Sales Order and Line Item'] = merged['Sales Order and Line Item'].astype(str)
-                    feedback['Sales Order and Line Item'] = feedback['Sales Order and Line Item'].astype(str)
+                feedback = previous.drop('Status (SS)', 1)
+                merged['g'] = merged.groupby('Sales Order and Line Item').cumcount()
+                feedback['g'] = feedback.groupby('Sales Order and Line Item').cumcount()
+                merged = merged.merge(feedback, how='left').drop('g', 1)
 
-                    merged['g'] = merged.groupby('Sales Order and Line Item').cumcount()
-                    feedback['g'] = feedback.groupby('Sales Order and Line Item').cumcount()
-                    merged = merged.merge(feedback, how='left').drop('g', 1)
-
-                    merged['g'] = merged.groupby('Sales Order and Line Item').cumcount()
-                    previous['g'] = previous.groupby('Sales Order and Line Item').cumcount()
-                    merged = merged.merge(previous, how='left').drop('g', 1)
-                    return merged
-                except:
-                    return merged.drop('g', 1)
+                merged['g'] = merged.groupby('Sales Order and Line Item').cumcount()
+                previous['g'] = previous.groupby('Sales Order and Line Item').cumcount()
+                merged = merged.merge(previous, how='left').drop('g', 1)
+                return merged
 
             # master = generate_sdm_feedback(master)
 
