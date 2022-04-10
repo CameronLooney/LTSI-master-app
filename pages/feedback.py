@@ -50,7 +50,7 @@ def app():
                 yellow_format = workbook.add_format({'bg_color': '#FFEB9C'})
                 worksheet.conditional_format('A2:AH%d' % (number_rows),
                                              {'type': 'formula',
-                                              'criteria': '=$AG2="Under Review with  C-SAM"',
+                                              'criteria': '=$AG2="Under Review with C-SAM"',
                                               'format': yellow_format})
                 red_format = workbook.add_format({'bg_color': '#ffc7ce'})
                 worksheet.conditional_format('A2:AH%d' % (number_rows),
