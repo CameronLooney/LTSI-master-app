@@ -1,4 +1,4 @@
-#DISCLAIMER: The code is in no way efficient, it is designed to merely complete the task. It is also not finished as
+# DISCLAIMER: The code is in no way efficient, it is designed to merely complete the task. It is also not finished as
 # some hard coded logic needs to be changed. It is simply the quick and dirty solution to the problem at hand
 import streamlit as st
 import pandas as pd
@@ -49,7 +49,6 @@ def app():
 
             vlookup, previous, TF, master = read_excel_files(aux, master)
 
-
             # this is required as some Dates are left blank and thus were lost
             # in later data manipulation
             def vlookup_date_fill(vlookup):
@@ -96,7 +95,7 @@ def app():
                 six_months = datetime.now() - timedelta(188)
                 rows_94 = master[
                     (master['ord_entry_date'] < six_months) & (
-                                master["sch_line_blocked_for_delv"] == 94)].index.to_list()
+                            master["sch_line_blocked_for_delv"] == 94)].index.to_list()
                 master = master.drop(rows_94).reset_index(drop=True)
                 return master
 
@@ -233,7 +232,7 @@ def app():
             def scheduled_out(merged):
                 ten_days = datetime.now() + timedelta(10)
                 merged.loc[(merged['cust_req_date'] < ten_days) & (merged['Status (SS)'] == 'Shippable') & (
-                            merged["Valid in LTSI Tool"] == 'TRUE'), 'Status (SS)'] = 'Scheduled Out'
+                        merged["Valid in LTSI Tool"] == 'TRUE'), 'Status (SS)'] = 'Scheduled Out'
                 return merged
 
             def open_orders_generator(master):
@@ -315,12 +314,11 @@ def app():
                     d1 = today.strftime("%d/%m/%Y")
                     st.write("Download Completed File:")
                     st.download_button(
-                            label="Download Excel worksheets",
-                            data=buffer,
-                            file_name="LTSI_file_BACKTEST" + d1 + ".xlsx",
-                            mime="application/vnd.ms-excel"
-                        )
-
+                        label="Download Excel worksheets",
+                        data=buffer,
+                        file_name="LTSI_file_BACKTEST" + d1 + ".xlsx",
+                        mime="application/vnd.ms-excel"
+                    )
 
             finished = open_orders_generator(master)
             write_to_excel(finished)

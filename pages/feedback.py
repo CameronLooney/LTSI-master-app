@@ -3,14 +3,12 @@
 # highlight yellow if status is under review with CSAM or action sdm is Not order created on tool Not processed on LTSI tool
 import pandas as pd
 import streamlit as st
-import smtplib
-from functools import reduce
 
 
 # ideas
 # join the all the columns then merge ?
 def app():
-    #st.set_page_config(page_title='LTSI Feedback Form')
+    # st.set_page_config(page_title='LTSI Feedback Form')
 
     st.write("""
     
@@ -27,7 +25,8 @@ def app():
     feedback2 = st.file_uploader("Upload Feedback File 2", type="xlsx")
     feedback3 = st.file_uploader("Upload Feedback File 3", type="xlsx")
     st.write("## Upload Open Orders File")
-    open_orders = st.file_uploader("Upload Open Order File if feedback does not contain all open order rows", type="xlsx")
+    open_orders = st.file_uploader("Upload Open Order File if feedback does not contain all open order rows",
+                                   type="xlsx")
     if st.button("Create Feedback"):
         def download_file(file):
             import io
@@ -41,11 +40,42 @@ def app():
                 fmt = workbook.add_format(formatdict)
                 worksheet.set_column('K:K', None, fmt)
                 worksheet.set_column('L:L', None, fmt)
+                number_rows = len(file.index) + 1
+                yellow_format = workbook.add_format({'bg_color': '#FFEB9C'})
+                worksheet.conditional_format('A2:AH%d' % (number_rows),
+                                             {'type': 'formula',
+                                              'criteria': '=$AH2="Under Review with  C-SAM"',
+                                              'format': yellow_format})
+                red_format = workbook.add_format({'bg_color': '#ffc7ce'})
+                worksheet.conditional_format('A2:AH%d' % (number_rows),
+                                             {'type': 'formula',
+                                              'criteria': '=$AH2="Blocked"',
+                                              'format': red_format})
+
+                green_format = workbook.add_format({'bg_color': '#c6efce'})
+                worksheet.conditional_format('A2:AH%d' % (number_rows),
+                                             {'type': 'formula',
+                                              'criteria': '=$AH2="Shippable"',
+                                              'format': green_format})
                 for column in file:
                     column_width = max(file[column].astype(str).map(len).max(), len(column))
                     col_idx = file.columns.get_loc(column)
                     writer.sheets['Sheet1'].set_column(col_idx, col_idx, column_width)
                     worksheet.autofilter(0, 0, file.shape[0], file.shape[1])
+                worksheet.set_column(11, 12, 20)
+                worksheet.set_column(12, 13, 20)
+                worksheet.set_column(13, 14, 20)
+                header_format = workbook.add_format({'bold': True,
+                                                     'bottom': 2,
+                                                     'bg_color': '#0AB2F7'})
+
+                # Write the column headers with the defined format.
+                for col_num, value in enumerate(file.columns.values):
+                    worksheet.write(0, col_num, value, header_format)
+                my_format = workbook.add_format()
+                my_format.set_align('left')
+
+                worksheet.set_column('N:N', None, my_format)
 
                 writer.save()
                 from datetime import date
@@ -60,7 +90,6 @@ def app():
                     mime="application/vnd.ms-excel"
                 )
 
-
         def old_feedback_getter(df):
             cols = [8]
             col_count = 37
@@ -74,10 +103,10 @@ def app():
         def new_feedback_getter(df):
             return df.iloc[:, [8, 34, 35, 36]]
 
-        def open_new_feedback_merge(open,new_feedback):
+        def open_new_feedback_merge(open, new_feedback):
             return open.merge(new_feedback, how="left", on="Sales Order and Line Item")
 
-        def case2(feedback,open_orders):
+        def case2(feedback, open_orders):
             feed1 = pd.read_excel(feedback, sheet_name=0, engine="openpyxl")
             openOrders = pd.read_excel(open_orders, sheet_name=0, engine="openpyxl")
             old_feedback = old_feedback_getter(feed1)
@@ -86,7 +115,8 @@ def app():
             combined_feedback = open.merge(new_feedback, how="left", on="Sales Order and Line Item")
             final = combined_feedback.merge(old_feedback, how="left", on="Sales Order and Line Item")
             download_file(final)
-        def case3(feedback1,feedback2,open_orders):
+
+        def case3(feedback1, feedback2, open_orders):
             feed1 = pd.read_excel(feedback1, sheet_name=0, engine="openpyxl")
             feed2 = pd.read_excel(feedback2, sheet_name=0, engine="openpyxl")
             openOrders = pd.read_excel(open_orders, sheet_name=0, engine="openpyxl")
@@ -100,7 +130,8 @@ def app():
             combined_feedback = open.merge(joined_new_feedback, how="left", on="Sales Order and Line Item")
             final = combined_feedback.merge(joined_old_feedback, how="left", on="Sales Order and Line Item")
             download_file(final)
-        def case4(feedback1,feedback2,feedback3, open_orders):
+
+        def case4(feedback1, feedback2, feedback3, open_orders):
             feed1 = pd.read_excel(feedback1, sheet_name=0, engine="openpyxl")
             feed2 = pd.read_excel(feedback2, sheet_name=0, engine="openpyxl")
             feed3 = pd.read_excel(feedback3, sheet_name=0, engine="openpyxl")
@@ -117,7 +148,8 @@ def app():
             combined_feedback = open.merge(joined_new_feedback, how="left", on="Sales Order and Line Item")
             final = combined_feedback.merge(joined_old_feedback, how="left", on="Sales Order and Line Item")
             download_file(final)
-        def case5(feedback1,feedback2):
+
+        def case5(feedback1, feedback2):
             feed1 = pd.read_excel(feedback1, sheet_name=0, engine="openpyxl")
             feed2 = pd.read_excel(feedback2, sheet_name=0, engine="openpyxl")
             open = feed1.iloc[:, :33]
@@ -131,7 +163,8 @@ def app():
             combined_feedback = open.merge(joined_new_feedback, how="left", on="Sales Order and Line Item")
             final = combined_feedback.merge(old_feedback, how="left", on="Sales Order and Line Item")
             download_file(final)
-        def case6(feedback1,feedback2,feedback3):
+
+        def case6(feedback1, feedback2, feedback3):
             feed1 = pd.read_excel(feedback1, sheet_name=0, engine="openpyxl")
             feed2 = pd.read_excel(feedback2, sheet_name=0, engine="openpyxl")
             feed3 = pd.read_excel(feedback3, sheet_name=0, engine="openpyxl")
@@ -144,50 +177,50 @@ def app():
             new_feedback2 = new_feedback2[new_feedback2.iloc[:, 1].notna()]
             new_feedback3 = new_feedback_getter(feed3)
             new_feedback3 = new_feedback3[new_feedback3.iloc[:, 1].notna()]
-            joined_new_feedback = pd.concat([new_feedback1, new_feedback2,new_feedback3], ignore_index=True)
+            joined_new_feedback = pd.concat([new_feedback1, new_feedback2, new_feedback3], ignore_index=True)
             combined_feedback = open.merge(joined_new_feedback, how="left", on="Sales Order and Line Item")
             final = combined_feedback.merge(old_feedback, how="left", on="Sales Order and Line Item")
             download_file(final)
 
         # Case 1 feedback + no open (has all rows)
-        if feedback1 is not None and feedback2 is None and feedback3 is None and  open_orders is None:
+        if feedback1 is not None and feedback2 is None and feedback3 is None and open_orders is None:
             st.error("File already complete, no need to upload")
-        if feedback1 is None and feedback2 is not  None and feedback3 is None and  open_orders is None:
+        if feedback1 is None and feedback2 is not None and feedback3 is None and open_orders is None:
             st.error("File already complete, no need to upload")
-        if feedback1 is None and feedback2 is None and feedback3 is not  None and  open_orders is None:
+        if feedback1 is None and feedback2 is None and feedback3 is not None and open_orders is None:
             st.error("File already complete, no need to upload")
 
         # Case 2 one feedback + open -> combine
         if feedback1 is not None and feedback2 is None and feedback3 is None and open_orders is not None:
-            case2(feedback1,open_orders)
-        if feedback1 is  None and feedback2 is not None and feedback3 is None and open_orders is not None:
-            case2(feedback2,open_orders)
-        if feedback1 is  None and feedback2 is None and feedback3 is not  None and open_orders is not None:
-            case2(feedback3,open_orders)
+            case2(feedback1, open_orders)
+        if feedback1 is None and feedback2 is not None and feedback3 is None and open_orders is not None:
+            case2(feedback2, open_orders)
+        if feedback1 is None and feedback2 is None and feedback3 is not None and open_orders is not None:
+            case2(feedback3, open_orders)
 
         # Case 3 two feedback + open -> combine
         if feedback1 is not None and feedback2 is not None and feedback3 is None and open_orders is not None:
-            case3(feedback1,feedback2,open_orders)
-        if feedback1 is not None and feedback2 is  None and feedback3 is not None and open_orders is not None:
-            case3(feedback1,feedback3,open_orders)
+            case3(feedback1, feedback2, open_orders)
+        if feedback1 is not None and feedback2 is None and feedback3 is not None and open_orders is not None:
+            case3(feedback1, feedback3, open_orders)
         if feedback1 is None and feedback2 is not None and feedback3 is not None and open_orders is not None:
-            case3(feedback2,feedback3,open_orders)
+            case3(feedback2, feedback3, open_orders)
 
         # Case 4 3 feedback + open orders
         if feedback1 is not None and feedback2 is not None and feedback3 is not None and open_orders is not None:
-            case4(feedback1,feedback2,feedback3, open_orders)
+            case4(feedback1, feedback2, feedback3, open_orders)
 
         # Case 5 2 feedbacks and no open orders
-        if feedback1 is not None and feedback2 is not None and feedback3 is  None and open_orders is None:
-            case5(feedback1,feedback2)
-        if feedback1 is not None and feedback2 is  None and feedback3 is not None and open_orders is None:
-            case5(feedback1,feedback3)
-        if feedback1 is  None and feedback2 is not None and feedback3 is not None and open_orders is None:
-            case5(feedback2,feedback3)
+        if feedback1 is not None and feedback2 is not None and feedback3 is None and open_orders is None:
+            case5(feedback1, feedback2)
+        if feedback1 is not None and feedback2 is None and feedback3 is not None and open_orders is None:
+            case5(feedback1, feedback3)
+        if feedback1 is None and feedback2 is not None and feedback3 is not None and open_orders is None:
+            case5(feedback2, feedback3)
 
         # Case 6 3 feedbacks and no Open
-        if feedback1 is not None and feedback2 is not None and feedback3 is not None and open_orders is  None:
-            case6(feedback1,feedback2,feedback3)
+        if feedback1 is not None and feedback2 is not None and feedback3 is not None and open_orders is None:
+            case6(feedback1, feedback2, feedback3)
 
         # Case 7 0 feedback and Open
         if feedback1 is None and feedback2 is None and feedback3 is None and open_orders is not None:
@@ -197,6 +230,3 @@ def app():
         # Case 8 no files uploaded
         if feedback1 is None and feedback2 is None and feedback3 is None and open_orders is None:
             st.error("Error: No Feedback/Files uploaded.")
-
-
-
