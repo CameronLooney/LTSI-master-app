@@ -125,6 +125,8 @@ def app():
             open = openOrders.iloc[:, :33]
             combined_feedback = open.merge(new_feedback, how="left", on="Sales Order and Line Item")
             final = combined_feedback.merge(old_feedback, how="left", on="Sales Order and Line Item")
+            cols = columns_to_keep()
+            final.drop_duplicates(subset=cols, keep='first', inplace=True)
             download_file(final)
 
         def case3(feedback1, feedback2, open_orders):
@@ -140,6 +142,8 @@ def app():
             joined_old_feedback = pd.concat([old_feedback1, old_feedback2], ignore_index=True)
             combined_feedback = open.merge(joined_new_feedback, how="left", on="Sales Order and Line Item")
             final = combined_feedback.merge(joined_old_feedback, how="left", on="Sales Order and Line Item")
+            cols = columns_to_keep()
+            final.drop_duplicates(subset=cols, keep='first', inplace=True)
             download_file(final)
 
         def case4(feedback1, feedback2, feedback3, open_orders):
@@ -175,6 +179,8 @@ def app():
             joined_new_feedback = pd.concat([new_feedback1, new_feedback2], ignore_index=True)
             combined_feedback = open.merge(joined_new_feedback, how="left", on="Sales Order and Line Item")
             final = combined_feedback.merge(old_feedback, how="left", on="Sales Order and Line Item")
+            cols = columns_to_keep()
+            final.drop_duplicates(subset=cols, keep='first', inplace=True)
             download_file(final)
 
         def case6(feedback1, feedback2, feedback3):
@@ -193,6 +199,8 @@ def app():
             joined_new_feedback = pd.concat([new_feedback1, new_feedback2, new_feedback3], ignore_index=True)
             combined_feedback = open.merge(joined_new_feedback, how="left", on="Sales Order and Line Item")
             final = combined_feedback.merge(old_feedback, how="left", on="Sales Order and Line Item")
+            cols = columns_to_keep()
+            final.drop_duplicates(subset=cols, keep='first', inplace=True)
             download_file(final)
 
         # Case 1 feedback + no open (has all rows)
