@@ -27,7 +27,7 @@ def app():
     email: cameron_j_looney@apple.com""")
     # Need to uploads to generate Open Orders, one is a helper file which is used for computation and feedback.
     # The master is the file downloaded from FrontEnd each day
-    aux = st.file_uploader("Upload Auxiliary File", type="xlsx")
+    aux = st.file_uploader("Upload Helper File", type="xlsx")
     master = st.file_uploader("Upload Raw File", type="xlsx")
     # Button to start the process
     if st.button("Generate LTSI File"):

@@ -20,7 +20,7 @@ st.image(display, width = 650)
 
 # Add all your application here
 app.add_page("Generate Open Order File", open_orders.app)
-app.add_page("Email C-SAMS", email.app)
+app.add_page("Feedback/Issue Form", email.app)
 app.add_page("Consolidate Feedback", feedback.app)
 
 
