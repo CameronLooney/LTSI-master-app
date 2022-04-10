@@ -2,6 +2,8 @@
 # merge datasets on sch line item doing whiochever merge need it to probabily be efficent
 # highlight yellow if status is under review with CSAM or action sdm is Not order created on tool Not processed on LTSI tool
 import pandas as pd
+from datetime import datetime, timedelta
+import io
 import streamlit as st
 
 
@@ -28,19 +30,23 @@ def app():
     open_orders = st.file_uploader("Upload Open Order File if feedback does not contain all open order rows",
                                    type="xlsx")
     if st.button("Create Feedback"):
-        def download_file(file):
-            import io
+        def download_file(merged):
             # Writing df to Excel Sheet
             buffer = io.BytesIO()
             with pd.ExcelWriter(buffer, engine='xlsxwriter') as writer:
-                file.to_excel(writer, sheet_name='Sheet1', index=False)
+                # Write each dataframe to a different worksheet.
+                # data["Date"] = pd.to_datetime(data["Date"])
+
+                # pd.to_datetime('date')
+                merged.to_excel(writer, sheet_name='Sheet1', index=False)
                 workbook = writer.book
                 worksheet = writer.sheets['Sheet1']
                 formatdict = {'num_format': 'dd/mm/yyyy'}
                 fmt = workbook.add_format(formatdict)
                 worksheet.set_column('K:K', None, fmt)
                 worksheet.set_column('L:L', None, fmt)
-                number_rows = len(file.index) + 1
+                # Light yellow fill with dark yellow text.
+                number_rows = len(merged.index) + 1
                 yellow_format = workbook.add_format({'bg_color': '#FFEB9C'})
                 worksheet.conditional_format('A2:AH%d' % (number_rows),
                                              {'type': 'formula',
@@ -57,11 +63,11 @@ def app():
                                              {'type': 'formula',
                                               'criteria': '=$AH2="Shippable"',
                                               'format': green_format})
-                for column in file:
-                    column_width = max(file[column].astype(str).map(len).max(), len(column))
-                    col_idx = file.columns.get_loc(column)
+                for column in merged:
+                    column_width = max(merged[column].astype(str).map(len).max(), len(column))
+                    col_idx = merged.columns.get_loc(column)
                     writer.sheets['Sheet1'].set_column(col_idx, col_idx, column_width)
-                    worksheet.autofilter(0, 0, file.shape[0], file.shape[1])
+                    worksheet.autofilter(0, 0, merged.shape[0], merged.shape[1])
                 worksheet.set_column(11, 12, 20)
                 worksheet.set_column(12, 13, 20)
                 worksheet.set_column(13, 14, 20)
@@ -70,23 +76,20 @@ def app():
                                                      'bg_color': '#0AB2F7'})
 
                 # Write the column headers with the defined format.
-                for col_num, value in enumerate(file.columns.values):
+                for col_num, value in enumerate(merged.columns.values):
                     worksheet.write(0, col_num, value, header_format)
                 my_format = workbook.add_format()
                 my_format.set_align('left')
 
                 worksheet.set_column('N:N', None, my_format)
-
                 writer.save()
-                from datetime import date
-
-                today = date.today()
+                today = datetime.today()
                 d1 = today.strftime("%d/%m/%Y")
                 st.write("Download Completed File:")
                 st.download_button(
                     label="Download Excel worksheets",
                     data=buffer,
-                    file_name="LTSI_feedback_" + d1 + ".xlsx",
+                    file_name="LTSI_file_" + d1 + ".xlsx",
                     mime="application/vnd.ms-excel"
                 )
 
