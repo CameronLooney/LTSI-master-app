@@ -20,9 +20,8 @@ def app():
     - If the feedback files contain all open orders within them, Open Order file is not needed
     - If the feedback files are reduced with just rows with new feedback then upload Open Orders File
     - Once at least two files have been uploaded click create 
-    ### Contact me if issues arise:
-    Slack: @Cameron Looney \n
-    email: cameron_j_looney@apple.com""")
+    ### Contact me:
+    Please use the Feedback form for any issues\n""")
     st.write("## Upload 1 to 3 Feedback Files")
     feedback1 = st.file_uploader("Upload Feedback File 1", type="xlsx")
     feedback2 = st.file_uploader("Upload Feedback File 2", type="xlsx")
