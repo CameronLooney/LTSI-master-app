@@ -90,6 +90,17 @@ def app():
                     mime="application/vnd.ms-excel"
                 )
 
+        def columns_to_keep():
+            cols = ['sales_org', 'country', 'cust_num', 'customer_name', 'sales_dis', 'rtm',
+                    'sales_ord', 'sd_line_item',
+                    'order_method', 'del_blk', 'cust_req_date', 'ord_entry_date',
+                    'cust_po_num', 'ship_num', 'ship_cust', 'ship_city', 'plant',
+                    'material_num', 'brand', 'lob', 'project_code', 'material_desc',
+                    'mpn_desc', 'ord_qty', 'shpd_qty', 'delivery_qty', 'remaining_qty',
+                    'delivery_priority', 'opt_delivery_qt', 'rem_mod_opt_qt',
+                    'sch_line_blocked_for_delv']
+            return cols
+
         def old_feedback_getter(df):
             cols = [8]
             col_count = 37
@@ -147,6 +158,10 @@ def app():
             joined_old_feedback = pd.concat([old_feedback1, old_feedback2, old_feedback3], ignore_index=True)
             combined_feedback = open.merge(joined_new_feedback, how="left", on="Sales Order and Line Item")
             final = combined_feedback.merge(joined_old_feedback, how="left", on="Sales Order and Line Item")
+            cols = columns_to_keep()
+            cols.remove('sales_ord')
+            cols.append('salesOrderNum')
+            final.drop_duplicates(subset=cols, keep='first', inplace=True)
             download_file(final)
 
         def case5(feedback1, feedback2):
