@@ -11,8 +11,8 @@
 
 ## Table of Contents
 - [Installation](#Installation)
-- [Usage](#Usage)
-- [LTSI Open Orders Page Instructions](#instructions)
+- [Usage/ Instructions](#Usage)
+- [License](#license)
 
 ---
 
