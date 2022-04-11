@@ -125,7 +125,7 @@ def app():
                     'material_num', 'brand', 'lob', 'project_code', 'material_desc',
                     'mpn_desc', 'ord_qty', 'shpd_qty', 'delivery_qty', 'remaining_qty',
                     'delivery_priority', 'opt_delivery_qt', 'rem_mod_opt_qt',
-                    'sch_line_blocked_for_delv','Status (SS)']
+                    'sch_line_blocked_for_delv']
             return cols
 
         def old_feedback_getter(df):
@@ -149,7 +149,7 @@ def app():
             openOrders = pd.read_excel(open_orders, sheet_name=0, engine="openpyxl")
             old_feedback = old_feedback_getter(feed1)
             new_feedback = new_feedback_getter(feed1)
-            open = openOrders.iloc[:, :33]
+            open = openOrders.iloc[:, :3]
             combined_feedback = open.merge(new_feedback, how="left", on="Sales Order and Line Item")
             final = combined_feedback.merge(old_feedback, how="left", on="Sales Order and Line Item")
             cols = columns_to_keep()
@@ -164,7 +164,7 @@ def app():
             new_feedback1 = new_feedback_getter(feed1)
             old_feedback2 = old_feedback_getter(feed2)
             new_feedback2 = new_feedback_getter(feed2)
-            open = openOrders.iloc[:, :33]
+            open = openOrders.iloc[:, :34]
             joined_new_feedback = pd.concat([new_feedback1, new_feedback2], ignore_index=True)
             joined_old_feedback = pd.concat([old_feedback1, old_feedback2], ignore_index=True)
             combined_feedback = open.merge(joined_new_feedback, how="left", on="Sales Order and Line Item")
