@@ -170,7 +170,6 @@ def app():
             combined_feedback = open.merge(joined_new_feedback, how="left", on="Sales Order and Line Item")
             final = combined_feedback.merge(joined_old_feedback, how="left", on="Sales Order and Line Item")
             cols = columns_to_keep()
-            cols.remove("")
             final.drop_duplicates(subset=cols, keep='first', inplace=True)
             download_file(final)
 
