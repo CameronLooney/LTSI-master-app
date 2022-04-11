@@ -149,7 +149,7 @@ def app():
             openOrders = pd.read_excel(open_orders, sheet_name=0, engine="openpyxl")
             old_feedback = old_feedback_getter(feed1)
             new_feedback = new_feedback_getter(feed1)
-            open = openOrders.iloc[:, :3]
+            open = openOrders.iloc[:, :33]
             combined_feedback = open.merge(new_feedback, how="left", on="Sales Order and Line Item")
             final = combined_feedback.merge(old_feedback, how="left", on="Sales Order and Line Item")
             cols = columns_to_keep()
@@ -164,7 +164,7 @@ def app():
             new_feedback1 = new_feedback_getter(feed1)
             old_feedback2 = old_feedback_getter(feed2)
             new_feedback2 = new_feedback_getter(feed2)
-            open = openOrders.iloc[:, :34]
+            open = openOrders.iloc[:, :33]
             joined_new_feedback = pd.concat([new_feedback1, new_feedback2], ignore_index=True)
             joined_old_feedback = pd.concat([old_feedback1, old_feedback2], ignore_index=True)
             combined_feedback = open.merge(joined_new_feedback, how="left", on="Sales Order and Line Item")
