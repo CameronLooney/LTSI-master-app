@@ -9,9 +9,8 @@ def app():
 
         ### For your second upload please upload your raw download for the day \n \n \n
 
-        ### Contact me if issues arise:
-        Slack: @Cameron Looney \n
-        email: cameron_j_looney@apple.com""")
+        ### Contact me:
+        Please use the Feedback form for any issues\n""")
 
     # Button to start the process
 
