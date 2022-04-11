@@ -125,7 +125,7 @@ def app():
                     'material_num', 'brand', 'lob', 'project_code', 'material_desc',
                     'mpn_desc', 'ord_qty', 'shpd_qty', 'delivery_qty', 'remaining_qty',
                     'delivery_priority', 'opt_delivery_qt', 'rem_mod_opt_qt',
-                    'sch_line_blocked_for_delv']
+                    'sch_line_blocked_for_delv','Status (SS)']
             return cols
 
         def old_feedback_getter(df):
@@ -170,6 +170,7 @@ def app():
             combined_feedback = open.merge(joined_new_feedback, how="left", on="Sales Order and Line Item")
             final = combined_feedback.merge(joined_old_feedback, how="left", on="Sales Order and Line Item")
             cols = columns_to_keep()
+            cols.remove("")
             final.drop_duplicates(subset=cols, keep='first', inplace=True)
             download_file(final)
 
