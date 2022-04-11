@@ -13,15 +13,15 @@ def app():
     # st.set_page_config(page_title='LTSI Feedback Form')
 
     st.write("""
-    
-    # LTSI Feedback 
-    ### Instructions: \n
-    - If feedback is received from SDM in separate files this tool can be used.
-    - If the feedback files contain all open orders within them, Open Order file is not needed
-    - If the feedback files are reduced with just rows with new feedback then upload Open Orders File
-    - Once at least two files have been uploaded click create 
-    ### Contact me:
-    Please use the Feedback form for any issues\n""")
+
+        # LTSI Feedback 
+        ### Instructions: \n
+        - If feedback is received from SDM in separate files this tool can be used.
+        - If the feedback files contain all open orders within them, Open Order file is not needed
+        - If the feedback files are reduced with just rows with new feedback then upload Open Orders File
+        - Once at least two files have been uploaded click create 
+        ### Contact me:
+        Please use the Feedback form for any issues\n""")
     st.write("## Upload 1 to 3 Feedback Files")
     feedback1 = st.file_uploader("Upload Feedback File 1", type="xlsx")
     feedback2 = st.file_uploader("Upload Feedback File 2", type="xlsx")
@@ -149,7 +149,7 @@ def app():
             openOrders = pd.read_excel(open_orders, sheet_name=0, engine="openpyxl")
             old_feedback = old_feedback_getter(feed1)
             new_feedback = new_feedback_getter(feed1)
-            open = openOrders.iloc[:, :33]
+            open = openOrders.iloc[:, :34]
             combined_feedback = open.merge(new_feedback, how="left", on="Sales Order and Line Item")
             final = combined_feedback.merge(old_feedback, how="left", on="Sales Order and Line Item")
             cols = columns_to_keep()
@@ -164,7 +164,7 @@ def app():
             new_feedback1 = new_feedback_getter(feed1)
             old_feedback2 = old_feedback_getter(feed2)
             new_feedback2 = new_feedback_getter(feed2)
-            open = openOrders.iloc[:, :33]
+            open = openOrders.iloc[:, :34]
             joined_new_feedback = pd.concat([new_feedback1, new_feedback2], ignore_index=True)
             joined_old_feedback = pd.concat([old_feedback1, old_feedback2], ignore_index=True)
             combined_feedback = open.merge(joined_new_feedback, how="left", on="Sales Order and Line Item")
@@ -184,7 +184,7 @@ def app():
             new_feedback2 = new_feedback_getter(feed2)
             old_feedback3 = old_feedback_getter(feed3)
             new_feedback3 = new_feedback_getter(feed3)
-            open = openOrders.iloc[:, :33]
+            open = openOrders.iloc[:, :34]
             joined_new_feedback = pd.concat([new_feedback1, new_feedback2, new_feedback3], ignore_index=True)
             joined_old_feedback = pd.concat([old_feedback1, old_feedback2, old_feedback3], ignore_index=True)
             combined_feedback = open.merge(joined_new_feedback, how="left", on="Sales Order and Line Item")
@@ -196,7 +196,7 @@ def app():
         def case5(feedback1, feedback2):
             feed1 = pd.read_excel(feedback1, sheet_name=0, engine="openpyxl")
             feed2 = pd.read_excel(feedback2, sheet_name=0, engine="openpyxl")
-            open = feed1.iloc[:, :33]
+            open = feed1.iloc[:, :34]
             old_feedback = old_feedback_getter(feed1)
             # drop na
             new_feedback1 = new_feedback_getter(feed1)
@@ -214,7 +214,7 @@ def app():
             feed1 = pd.read_excel(feedback1, sheet_name=0, engine="openpyxl")
             feed2 = pd.read_excel(feedback2, sheet_name=0, engine="openpyxl")
             feed3 = pd.read_excel(feedback3, sheet_name=0, engine="openpyxl")
-            open = feed1.iloc[:, :33]
+            open = feed1.iloc[:, :34]
             old_feedback = old_feedback_getter(feed1)
             # drop na
             new_feedback1 = new_feedback_getter(feed1)
