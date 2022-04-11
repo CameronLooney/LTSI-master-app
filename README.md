@@ -21,7 +21,9 @@ https://share.streamlit.io/cameronlooney/ltsi-master-app/app.py
 
 ## Usage 
 ### LTSI Open Orders Page
+<kbd>
 <img src="assets/images/Page1.png" width="500" height="400">
+</kbd>
 
 #### **Instructions** 
 **Step 1**: Prepare the Helper File as normal <br>
