@@ -239,6 +239,8 @@ def app():
 
                 merged['Status (SS)'] = np.where(merged[action_sdm].str.contains('cancel', regex=False),
                                                  'To be cancelled / reduced', merged['Status (SS)'])
+                merged[action_sdm] = merged[action_sdm].astype(str)
+                merged[action_sdm].replace(['0', '0.0'], '', inplace=True)
                 return merged
 
             def open_orders_generator(master):
