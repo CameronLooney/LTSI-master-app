@@ -120,8 +120,7 @@ def app():
 
 
         def columns_to_keep():
-            cols = ['country', 'cust_num', 'customer_name', 'sales_dis', 'rtm',
-                    'sales_ord', 'sd_line_item',
+            cols = ['sales_org', 'country', 'cust_num', 'customer_name', 'sales_dis', 'rtm', 'sd_line_item',
                     'order_method', 'del_blk', 'cust_req_date', 'ord_entry_date',
                     'cust_po_num', 'ship_num', 'ship_cust', 'ship_city', 'plant',
                     'material_num', 'brand', 'lob', 'project_code', 'material_desc',
@@ -211,6 +210,7 @@ def app():
             final = combined_feedback.merge(old_feedback, how="left", on="Sales Order and Line Item")
 
             cols = columns_to_keep()
+
             final.drop_duplicates(subset=cols, keep='first', inplace=True)
             download_file(final)
 
