@@ -225,9 +225,11 @@ def app():
             # master = generate_sdm_feedback(master)
 
             def scheduled_out(merged):
+                today = datetime.now()
                 ten_days = datetime.now() + timedelta(10)
-                merged.loc[(merged['cust_req_date'] < ten_days) & (merged['Status (SS)'] == 'Shippable') & (
-                        merged["Valid in LTSI Tool"] == 'TRUE'), 'Status (SS)'] = 'Scheduled Out'
+                merged.loc[(merged['cust_req_date'] >= today) & (merged['cust_req_date'] < ten_days) & (
+                            merged['Status (SS)'] == 'Shippable') & (
+                                   merged["Valid in LTSI Tool"] == 'TRUE'), 'Status (SS)'] = 'Scheduled Out'
                 return merged
 
             def open_orders_generator(master):
@@ -243,9 +245,9 @@ def app():
                 step10 = generate_unique_key(step9)
                 step11 = generate_validity_column(step10)
                 step12 = generate_status_column(step11)
-                # step13 = scheduled_out(step12)
-                step13 = new_sdm_feedback(step12)
-                finished = generate_sdm_feedback(step13)
+                step13 = scheduled_out(step12)
+                step14 = new_sdm_feedback(step13)
+                finished = generate_sdm_feedback(step14)
                 cols = columns_to_keep()
                 cols.remove('sales_ord')
                 cols.append('salesOrderNum')
