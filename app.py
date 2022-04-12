@@ -21,7 +21,7 @@ st.image(display, width = 650)
 # Add all your application here
 app.add_page("Generate Open Order File", open_orders.app)
 app.add_page("Valid LTSI list generator", ltsi.app)
-app.add_page("Build Helper File", email.app)
+app.add_page("Build Helper File", helper_file.app)
 app.add_page("Consolidate Feedback", feedback.app)
 app.add_page("Feedback/Issue Form", email.app)
 
