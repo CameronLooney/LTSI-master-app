@@ -6,9 +6,11 @@ import pandas as pd
 def app():
     st.write("""
 
-        # LTSI Tool \n
+        # Helper File Builder \n
 
-        ### For your second upload please upload your raw download for the day \n \n \n
+        ### 1. Upload Raw Front End \n 
+        ### 2. Upload the most up to date Open Order File from yesterday\n 
+        ### 3. Upload your Helper File that is up to date (if MPNs added) from yesterday\n
 
         ### Contact me if issues arise:
         Slack: @Cameron Looney \n
@@ -58,7 +60,7 @@ def app():
         if upload_ltsi is not None and upload_previous_open_orders is not None:
             upload = pd.read_excel(upload_ltsi, sheet_name=0, engine="openpyxl")
             open_orders = pd.read_excel(upload_previous_open_orders, sheet_name=0, engine="openpyxl")
-            helper = pd.read_excel(upload_previous_helper, sheet_name=0, engine="openpyxl")
+
             valid = upload[["salesOrderNum"]]
             valid["Valid in LTSI Tool"] = "TRUE"
 
