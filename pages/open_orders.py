@@ -305,7 +305,7 @@ def app():
                                                  {'type': 'formula',
                                                   'criteria': '=$AH2="Scheduled Out"',
                                                   'format': green_format})
-                    grey_format = workbook.add_format({'bg_color': '#c6efce'})
+                    grey_format = workbook.add_format({'bg_color': '#C0C0C0'})
                     worksheet.conditional_format('A2:AH%d' % (number_rows),
                                                  {'type': 'formula',
                                                   'criteria': '=$AH2="To be cancelled / reduced"',
