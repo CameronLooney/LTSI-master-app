@@ -231,6 +231,8 @@ def app():
                             merged['Status (SS)'] == 'Shippable') & (
                                    merged["Valid in LTSI Tool"] == 'TRUE'), 'Status (SS)'] = 'Scheduled Out'
                 return merged
+            def cancellations(merged):
+                boolean_findings = merged['a'].str.contains('diana')
 
             def open_orders_generator(master):
                 step1 = master_vlookup_merge(master, vlookup)
@@ -247,7 +249,8 @@ def app():
                 step12 = generate_status_column(step11)
                 step13 = scheduled_out(step12)
                 step14 = new_sdm_feedback(step13)
-                finished = generate_sdm_feedback(step14)
+                step15 = generate_sdm_feedback(step14)
+                finished = cancellations(step15)
                 cols = columns_to_keep()
                 cols.remove('sales_ord')
                 cols.append('salesOrderNum')
