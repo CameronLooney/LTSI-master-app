@@ -295,7 +295,7 @@ def app():
                                                  {'type': 'formula',
                                                   'criteria': '=$AH2="Blocked"',
                                                   'format': red_format})
-
+                    # C0C0C0
                     green_format = workbook.add_format({'bg_color': '#c6efce'})
                     worksheet.conditional_format('A2:AH%d' % (number_rows),
                                                  {'type': 'formula',
@@ -305,6 +305,11 @@ def app():
                                                  {'type': 'formula',
                                                   'criteria': '=$AH2="Scheduled Out"',
                                                   'format': green_format})
+                    grey_format = workbook.add_format({'bg_color': '#c6efce'})
+                    worksheet.conditional_format('A2:AH%d' % (number_rows),
+                                                 {'type': 'formula',
+                                                  'criteria': '=$AH2="To be cancelled / reduced"',
+                                                  'format': grey_format})
 
                     for column in merged:
                         column_width = max(merged[column].astype(str).map(len).max(), len(column))
