@@ -231,8 +231,15 @@ def app():
                             merged['Status (SS)'] == 'Shippable') & (
                                    merged["Valid in LTSI Tool"] == 'TRUE'), 'Status (SS)'] = 'Scheduled Out'
                 return merged
+
             def cancellations(merged):
-                boolean_findings = merged['a'].str.contains('diana')
+                action_sdm = merged.columns[37]
+                merged[action_sdm] = merged[action_sdm].str.lower()
+                merged[action_sdm] = merged[action_sdm].fillna("0")
+
+                merged['Status (SS)'] = np.where(merged[action_sdm].str.contains('cancel', regex=False),
+                                                 'To be cancelled / reduced', merged['Status (SS)'])
+                return merged
 
             def open_orders_generator(master):
                 step1 = master_vlookup_merge(master, vlookup)
