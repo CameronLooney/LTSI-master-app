@@ -232,13 +232,15 @@ def app():
                                    merged["Valid in LTSI Tool"] == 'TRUE'), 'Status (SS)'] = 'Scheduled Out'
                 return merged
 
-            def cancellations(merged):
+            def status_override(merged):
                 action_sdm = merged.columns[37]
                 merged[action_sdm] = merged[action_sdm].str.lower()
                 merged[action_sdm] = merged[action_sdm].fillna("0")
 
                 merged['Status (SS)'] = np.where(merged[action_sdm].str.contains('cancel', regex=False),
                                                  'To be cancelled / reduced', merged['Status (SS)'])
+                merged['Status (SS)'] = np.where(merged[action_sdm].str.contains('block', regex=False),
+                                                 'Blocked', merged['Status (SS)'])
                 merged[action_sdm] = merged[action_sdm].astype(str)
                 merged[action_sdm].replace(['0', '0.0'], '', inplace=True)
                 return merged
@@ -259,7 +261,7 @@ def app():
                 step13 = scheduled_out(step12)
                 step14 = new_sdm_feedback(step13)
                 step15 = generate_sdm_feedback(step14)
-                finished = cancellations(step15)
+                finished = status_override(step15)
                 cols = columns_to_keep()
                 cols.remove('sales_ord')
                 cols.append('salesOrderNum')
