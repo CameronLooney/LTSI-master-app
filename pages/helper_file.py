@@ -70,5 +70,13 @@ def app():
             valid = valid[valid["salesOrderNum"] != '']
 
             status_col_num = open_orders.columns.get_loc("Status (SS)")
-            yesterday = open_orders.iloc[:, [8, status_col_num, 34, 35, 36]]
+            feedback_length =   len(open_orders.columns)
+            complete_feedback = [8, status_col_num]
+            i = 34
+            while i < feedback_length:
+                complete_feedback.append(i)
+                i+=1
+
+
+            yesterday = open_orders.iloc[:, complete_feedback]
             download_file(valid, yesterday)
